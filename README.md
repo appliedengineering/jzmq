@@ -7,31 +7,36 @@ This is the Java language binding for libzmq (aka ZeroMQ, 0MQ).
 
 The latest [javadocs](http://zeromq.github.com/jzmq/javadocs/).
 
-Building and Installing JZMQ
-----------------------------
+Before Starting
+---------------
+Make sure you download + Install the [Java Runtime](https://www.oracle.com/java/technologies/javase-jre8-downloads.html) and [Development kit](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html). You may need to sign up for an Oracle account.
 
-To build you need to have the libzmq library already installed, then you run:
+After downloading the Java Runtime and Development kit, make sure you have a version of [Visual Studio](https://visualstudio.microsoft.com/) and [CMAKE GUI](https://cmake.org/download/) but you can choose to use the command prompt if you would like.
 
-```bash
-cd jzmq-jni/
-./autogen.sh
-./configure
-make
-make install
-cd ..
-mvn package
-```
+Building and Installing Libzmq
+------------------------------
+Clone the source code from [here](https://github.com/zeromq/libzmq) or download any release and unpack to any folder. I will refer to this folder as "libzmq" from now on.
 
-If you hope to install to your local maven, then you should run:
+After cloning, open up CMAKE and chose the folder where the source code is ("libzmq") and choose a folder to output the configuration (I will refer to this folder as "libzmq-out"). After configuring your folders, press configure and it might come up with a dialog box where it says to choose your compiler. Make sure to choose the correct version of Visual Studio. 
 
-```
-mvn install -Dgpg.skip=true
-```
+See this image if you're confused:
+![CMAKE Configuration](https://github.com/appliedengineering/jzmq/blob/master/Documentation/Images/libzmq.jpg?raw=true)
+
+After pressing configure, you should be presented with a bunch of options highlighted in red. ***MAKE SURE TO CHECK with-drafts option*** 
+
+Then, press generate. This should generate a VS project. Open the project and build it by first changing Debug to Release next to the the Local Windows Debugger then going to the top bar of the window and going Build->Build Solution.
+
+Now, you should have your .libs in lib/release/
+
+Take both libzmq-(v...).lib files and rename the shorter name to libzmq.lib. In my case, it was renaming libzmq-v142-mt-4_3_4.lib to libzmq.lib. Copy this file to another folder which I will refer to as "zmq"
+
+Next, you will need two .h files which can be found [here](https://github.com/zeromq/libzmq/tree/master/include)
+
+Copy all of these files to the "zmq" folder.
 
 Building Windows 64bit with CMake & NMake
 -----------------------------------------
 
-It is recommended to follow these steps with the *Visual C++ 2015 Build Tools*.
 
 1. create a new and empty directory:
 ```
@@ -50,73 +55,24 @@ d:\temp\JZMQ\jzmq\jzmq-jni\>mkdir build64
 d:\temp\JZMQ\jzmq\jzmq-jni\>cd build64
 ```
 4. Now call CMake to generate the project
-```
-D:\temp\JZMQ\jzmq\jzmq-jni\build64>cmake .. -G "NMake Makefiles" -DZMQ_C_INCLUDE_PATH=<path to zmq include> -DZMQ_C_LIB_PATH=<path to zmq library>
--- The C compiler identification is MSVC 19.0.24210.0
--- The CXX compiler identification is MSVC 19.0.24210.0
--- Check for working C compiler: C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/cl.exe
--- Check for working C compiler: C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/cl.exe -- works
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/cl.exe
--- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/cl.exe -- works
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- Found Java: C:/Program Files/Java/jdk1.8.0_91/bin/java.exe (found version "1.8.0.91")
--- Found JNI: C:/Program Files/Java/jdk1.8.0_91/lib/jawt.lib
--- Configuring done
--- Generating done
--- Build files have been written to: D:/temp/JZMQ/jzmq/jzmq-jni/build64
-```
-5. Now finally call NMake to build the zmq.jar and jzmq.lib, jzmq.dll
-```
-D:\temp\JZMQ\jzmq\jzmq-jni\build64>nmake
-Microsoft (R) Program Maintenance Utility Version 14.00.24210.0
-Copyright (C) Microsoft Corporation.  All rights reserved.
 
-[ 10%] Generating config.hpp
-[ 20%] Generating org/zeromq/ZMQ.class, org/zeromq/Utils.class, org/zeromq/ZMQ$$Context.class, org/zeromq/ZMQ$$Socket.class, org/zeromq/ZMQ$$PollItem.class, org/zeromq/ZMQ$$Poller.class, org/zeromq/ZM
-Q$$Error.class, org/zeromq/ZMQException.class, org/zeromq/ZMQQueue.class, org/zeromq/ZMQForwarder.class, org/zeromq/ZMQStreamer.class, org/zeromq/EmbeddedLibraryTools.class, org/zeromq/App.class, org/
-zeromq/ZContext.class, org/zeromq/ZDispatcher.class, org/zeromq/ZDispatcher$$1.class, org/zeromq/ZDispatcher$$SocketDispatcher$$1.class, org/zeromq/ZDispatcher$$SocketDispatcher$$2.class, org/zeromq/Z
-Dispatcher$$SocketDispatcher$$ZMessageBuffer.class, org/zeromq/ZDispatcher$$SocketDispatcher.class, org/zeromq/ZDispatcher$$ZMessageHandler.class, org/zeromq/ZDispatcher$$ZSender.class, org/zeromq/ZFr
-ame.class, org/zeromq/ZMsg.class, org/zeromq/ZLoop.class, org/zeromq/ZLoop$$IZLoopHandler.class, org/zeromq/ZLoop$$SPoller.class, org/zeromq/ZLoop$$STimer.class, org/zeromq/ZThread.class, org/zeromq/Z
-Thread$$IAttachedRunnable.class, org/zeromq/ZThread$$IDetachedRunnable.class, org/zeromq/ZThread$$ShimThread.class
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-[ 30%] Generating org_zeromq_ZMQ.h, org_zeromq_ZMQ_Error.h, org_zeromq_ZMQ_Context.h, org_zeromq_ZMQ_Socket.h, org_zeromq_ZMQ_PollItem.h, org_zeromq_ZMQ_Poller.h
-[ 40%] Generating lib/zmq.jar
-Scanning dependencies of target jzmq
-[ 40%] Generating org/zeromq/ZMQ.class, org/zeromq/Utils.class, org/zeromq/ZMQ$$Context.class, org/zeromq/ZMQ$$Socket.class, org/zeromq/ZMQ$$PollItem.class, org/zeromq/ZMQ$$Poller.class, org/zeromq/ZM
-Q$$Error.class, org/zeromq/ZMQException.class, org/zeromq/ZMQQueue.class, org/zeromq/ZMQForwarder.class, org/zeromq/ZMQStreamer.class, org/zeromq/EmbeddedLibraryTools.class, org/zeromq/App.class, org/
-zeromq/ZContext.class, org/zeromq/ZDispatcher.class, org/zeromq/ZDispatcher$$1.class, org/zeromq/ZDispatcher$$SocketDispatcher$$1.class, org/zeromq/ZDispatcher$$SocketDispatcher$$2.class, org/zeromq/Z
-Dispatcher$$SocketDispatcher$$ZMessageBuffer.class, org/zeromq/ZDispatcher$$SocketDispatcher.class, org/zeromq/ZDispatcher$$ZMessageHandler.class, org/zeromq/ZDispatcher$$ZSender.class, org/zeromq/ZFr
-ame.class, org/zeromq/ZMsg.class, org/zeromq/ZLoop.class, org/zeromq/ZLoop$$IZLoopHandler.class, org/zeromq/ZLoop$$SPoller.class, org/zeromq/ZLoop$$STimer.class, org/zeromq/ZThread.class, org/zeromq/Z
-Thread$$IAttachedRunnable.class, org/zeromq/ZThread$$IDetachedRunnable.class, org/zeromq/ZThread$$ShimThread.class
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-[ 40%] Generating org_zeromq_ZMQ.h, org_zeromq_ZMQ_Error.h, org_zeromq_ZMQ_Context.h, org_zeromq_ZMQ_Socket.h, org_zeromq_ZMQ_PollItem.h, org_zeromq_ZMQ_Poller.h
-[ 50%] Building CXX object CMakeFiles/jzmq.dir/src/main/c++/Context.cpp.obj
-Context.cpp
-[ 60%] Building CXX object CMakeFiles/jzmq.dir/src/main/c++/Poller.cpp.obj
-Poller.cpp
-D:\temp\JZMQ\jzmq\jzmq-jni\src\main\c++\Poller.cpp(76): warning C4244: '=': conversion from 'jint' to 'short', possible loss of data
-[ 70%] Building CXX object CMakeFiles/jzmq.dir/src/main/c++/Socket.cpp.obj
-Socket.cpp
-D:\temp\JZMQ\jzmq\jzmq-jni\src\main\c++\Socket.cpp(266): warning C4267: 'argument': conversion from 'size_t' to 'jsize', possible loss of data
-D:\temp\JZMQ\jzmq\jzmq-jni\src\main\c++\Socket.cpp(272): warning C4267: 'argument': conversion from 'size_t' to 'jsize', possible loss of data
-D:\temp\JZMQ\jzmq\jzmq-jni\src\main\c++\Socket.cpp(847): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\temp\JZMQ\jzmq\jzmq-jni\src\main\c++\Socket.cpp(875): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-[ 80%] Building CXX object CMakeFiles/jzmq.dir/src/main/c++/util.cpp.obj
-util.cpp
-[ 90%] Building CXX object CMakeFiles/jzmq.dir/src/main/c++/ZMQ.cpp.obj
-ZMQ.cpp
-[100%] Linking CXX shared library lib\jzmq.dll
-   Creating library lib\jzmq.lib and object lib\jzmq.exp
-   Creating library lib\jzmq.lib and object lib\jzmq.exp
-[100%] Built target jzmq
-```
+You can do this by opening CMAKE Gui and choosing JZMQ\jzmq\jzmq-jni folder as your source code.
+Then, choose JZMQ\jzmq\jzmq-jni\build64 as your output.
+
+Click configure like how we did with the libzmq steps above.
+
+Afterwards, you will be presented with a couple of options. For ZMQ_C_INCLUDE_PATH and ZMQ_C_LIB_PATH options, choose the "zmq" folder that we created above. It should still contain the two .h files and the one "libzmq.lib" file.
+
+Next, click generate to create the VS project.
+
+Open the VS project.
+
+In the project jzmq, you will find the CMakeLists.txt. You will have to open it and replace all $$ in the file with $.
+
+After doing that, build the project by Build->Build Solution just like above.
+
+It should complete without any errors and the zmq.jar and jzmq.lib, jzmq.dll files can be found at \JZMQ\jzmq\jzmq-jni\build64\lib
+
 
 Avoiding JNI
 ------------
